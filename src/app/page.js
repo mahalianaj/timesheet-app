@@ -1,103 +1,186 @@
-import Image from "next/image";
+'use client'
+import { useState, useEffect } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    // State for form inputs
+  const [date, setDate] = useState('');
+  const [hours, setHours] = useState('');
+  const [taskDescription, setTaskDescription] = useState('');
+  const [project, setProject] = useState('');
+  
+  // State for timesheet entries and users
+  const [timesheets, setTimesheets] = useState([]);
+  const [users, setUsers] = useState([]);
+  // State for selected user to filter timesheets
+  const [selectedUser, setSelectedUser] = useState('');
+
+    // NocoDB API configuration
+  const API_URL = 'http://localhost:8080/api/v1/db/data/v1/TimesheetApp';
+  const API_TOKEN = 'UskgwD2xuVC8AyxLN8wLyt2REkDcI7H88wfyteJ5'; 
+
+   useEffect(() => {
+    // Fetch users
+    fetch(`${API_URL}/Users`, {
+      headers: { 'xc-token': API_TOKEN },
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to fetch users');
+        return response.json();
+      })
+      .then((data) => {
+        setUsers(data.list);
+        if (data.list.length > 0) {
+          setSelectedUser(data.list[0].Id); // Default to first user
+        }
+      })
+      .catch((error) => console.error('Error fetching users:', error));
+
+    // Fetch timesheets
+    fetchTimesheets();
+  }, [selectedUser]);
+
+   // Function to fetch timesheets for the selected user
+  const fetchTimesheets = () => {
+    if (!selectedUser) return; // Skip if no user is selected
+    fetch(`${API_URL}/Timesheets?where=(UserId,eq,${selectedUser})`, {
+      headers: { 'xc-token': API_TOKEN },
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to fetch timesheets');
+        return response.json();
+      })
+      .then((data) => {
+        setTimesheets(data.list);
+      })
+      .catch((error) => console.error('Error fetching timesheets:', error));
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_URL}/Timesheets`, {
+        method: 'POST',
+        headers: {
+          'xc-token': API_TOKEN,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          UserId: parseInt(userId),
+          Date: date,
+          Hours: parseFloat(hours),
+          Task: task,
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to add timesheet');
+      // Clear form
+      setDate('');
+      setHours('');
+      setTask('');
+      // Refresh timesheets
+      fetchTimesheets();
+      alert('Timesheet entry added!');
+    } catch (error) {
+      console.error('Error adding timesheet:', error);
+      alert('Failed to add timesheet entry.');
+    }
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Intern Timesheet App</h1>
+
+      {/* User Selection */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium">Select User:</label>
+        <select
+          value={selectedUser}
+          onChange={(e) => setSelectedUser(e.target.value)}
+          className="mt-1 block w-full border rounded p-2"
+        >
+          <option value="">Select a user</option>
+          {users.map((user) => (
+            <option key={user.Id} value={user.Id}>
+              {user.Name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Timesheet Form */}
+      <form onSubmit={handleSubmit} className="mb-8">
+        <div className="grid grid-cols-1 gap-4">
+          <div>
+            <label className="block text-sm font-medium">User ID:</label>
+            <input
+              type="number"
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              className="mt-1 block w-full border rounded p-2"
+              required
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Date:</label>
+            <input
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="mt-1 block w-full border rounded p-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Hours:</label>
+            <input
+              type="number"
+              step="0.1"
+              value={hours}
+              onChange={(e) => setHours(e.target.value)}
+              className="mt-1 block w-full border rounded p-2"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Task:</label>
+            <input
+              type="text"
+              value={task}
+              onChange={(e) => setTask(e.target.value)}
+              className="mt-1 block w-full border rounded p-2"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
-            Read our docs
-          </a>
+            Add Timesheet Entry
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </form>
+
+      {/* Timesheet Table */}
+      <h2 className="text-xl font-semibold mb-2">Timesheet Entries</h2>
+      <table className="w-full border-collapse border">
+        <thead>
+          <tr className="bg-gray-200">
+            <th className="border p-2">Date</th>
+            <th className="border p-2">Hours</th>
+            <th className="border p-2">Task</th>
+          </tr>
+        </thead>
+        <tbody>
+          {timesheets.map((entry) => (
+            <tr key={entry.Id}>
+              <td className="border p-2">{entry.Date}</td>
+              <td className="border p-2">{entry.Hours}</td>
+              <td className="border p-2">{entry.Task}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
