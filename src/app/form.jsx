@@ -2,20 +2,24 @@
 import React, { useEffect, useState } from "react";
 
 function MyForm() {
-    const [taskDescription, setTaskDescription] = useState('');
+    const [task_description, settask_description] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('form submitted with:', taskDescription);
-        if (!taskDescription.trim()) {
-            console.log('Error: taskDescription is empty.')
+
+        console.log('form submitted with:', task_description);
+        
+        if (!task_description.trim()) {
+            alert('Error: task_description is empty.');
+            return;
         }
         await fetch('/api/test_table', {
             method: 'POST',
             headers: {'Content-Type' : 'application/json'},
-            body: JSON.stringify({taskDescription}),
+            body: JSON.stringify({task_description}),
         });
-        setTaskDescription('');
+        // Reset form 
+        settask_description('');
     };
 
     return (
@@ -23,8 +27,8 @@ function MyForm() {
             <label>Task Description: </label>
                 <input 
                     type="text" 
-                    value={taskDescription}
-                    onChange={(e) => setTaskDescription(e.target.value)}
+                    value={task_description}
+                    onChange={(e) => settask_description(e.target.value)}
                 />
             <br />
             <button type='submit'>Submit Form</button>
