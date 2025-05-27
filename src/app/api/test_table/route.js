@@ -1,19 +1,16 @@
 export async function POST(request) {
 
     const body = await request.json();
-    const task_description = body.task_description; 
+    const taskDescription = body.taskDescription; 
 
+    
     const res = await fetch(`${process.env.API_URL}${process.env.TEST_TABLE_ID}/records`,  {
         method: 'POST',
         headers: {
             'Content-Type' : 'application/json',
             'xc-token': process.env.API_TOKEN,
         },
-        body: JSON.stringify({
-            fields: {
-                "task_description": task_description
-            }
-        }),
+        body: JSON.stringify({ taskDescription}),
     });
     
     if (!res.ok) {
