@@ -25,3 +25,44 @@ body {
   font-family: "Optima", "Segoe UI", "Candara", "Calibri", "Arial", sans-serif;
 }
 
+
+input {
+  padding: 3px, 3px ;
+  padding-top: 3px;
+  width: 100%;
+    color: rgb(9, 43, 61);
+
+}
+
+input:focus {
+  outline: none ;
+}
+
+select{
+  color: rgb(9, 43, 61);
+}
+
+select:focus{
+  outline: none;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 20px auto;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+th {
+    background-color: #eee;
+}
+
+.table-buffer {
+  border: none;
+}
