@@ -1,6 +1,6 @@
 'use client'
 
-export default function BackToButton({Component}) {
+export default function Button({route}) {
 
     return (
         <button>   back</button>

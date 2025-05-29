@@ -3,30 +3,24 @@ import { signIn} from "next-auth/react";
 import { useState } from "react";
 import './login.css'
 import Dashboard from "../dasboard/page";
+import MyForm from "../form/page";
+import { useRouter } from 'next/navigation';
+
 
 export default function Login() {
+    const router = useRouter();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
      const [showForm, setShowForm] = useState(false);
 
-    // const handleLogin = async (e) => {
-    //     e.preventDefault();
-    //     await signIn('credentials', {
-    //         email,
-    //         password,
-    //         callbackUrl: '/dashboard',
-    //     });
-    // };
     const handleLogin = async (e) => {
         e.preventDefault();
         if (email && password) {
-            setShowForm(true); 
+            router.push('/form');
         }
         
     };
-
-    if (showForm)
-        return <Dashboard/>;
 
     return(
         <div className="login-container">

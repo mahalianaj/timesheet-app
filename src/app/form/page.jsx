@@ -7,8 +7,11 @@ import LongTextInput from "./LongTextInput";
 import ProjectSelector from "./ProjectSelector";
 import HoursInput from "./HoursInput";
 import './form.css'
+import TimesheetTable from "../components/TimesheetTable";
+import { useRouter } from 'next/navigation';
 
 function MyForm() {
+    const router = useRouter();
     const [taskDescription, setTaskDescription] = useState('');
     const [hours, setHours] = useState('');
     const [date, setDate] = useState('');
@@ -106,6 +109,7 @@ function MyForm() {
                 <HoursInput hours={hours} setHours={setHours}/>
                 <br />
                 <button type='submit' className="form-button">Submit Form</button>
+                <button type='button' className="form-button" onClick={() => router.push('/table')}>Go to table</button>
             </form>
         </div>
     );

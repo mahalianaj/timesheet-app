@@ -39,8 +39,8 @@ export default function TimesheetTable(){
                     <tr key={index}>
                         <td>{row.taskDescription}</td>
                         <td>{row.date}</td>
-                        <td>{row.hours}</td>
                         <td>{row.project}</td>
+                        <td>{row.hours}</td>
 
                     </tr>
                 ))} 

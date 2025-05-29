@@ -1,14 +1,14 @@
 'use client'
 import React, {useState} from "react";
-import MyForm from './form/form.jsx';
-import Login from "./login/login.jsx";
-import TimesheetTable from "./modules/TimesheetTable.jsx";
+import MyForm from './form/page.jsx';
+import Login from "./login/page.jsx";
+import TimesheetTable from "./components/TimesheetTable.jsx";
 
 
 function App() {
     return (
         <div>
-            <MyForm />
+            <Login/>
         </div>
     );
 }

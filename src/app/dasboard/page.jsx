@@ -1,7 +1,7 @@
 'use client'
 
-import MyForm from "../form/form"
-import TimesheetTable from "../modules/TimesheetTable"
+import MyForm from "../form/page"
+import TimesheetTable from "../components/TimesheetTable"
 
 export default function Dashboard() {
 
