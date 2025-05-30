@@ -2,11 +2,11 @@
 
 import React, { use, useEffect, useState } from "react";
 
-import DateInput from "./DateInput";
-import LongTextInput from "./LongTextInput";
-import ProjectSelector from "./ProjectSelector";
-import HoursInput from "./HoursInput";
-import './form.css'
+import DateInput from "../components/DateInput";
+import LongTextInput from "../components/LongTextInput";
+import ProjectSelector from "../components/ProjectSelector";
+import HoursInput from "../components/HoursInput";
+import '../styles/form.css'
 import TimesheetTable from "../components/TimesheetTable";
 import { useRouter } from 'next/navigation';
 

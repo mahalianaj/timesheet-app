@@ -1,8 +1,14 @@
 'use client'
 import { useEffect, useState } from "react"
+import '../styles/login.css'
+import '../styles/table.css'
+
 
 export default function TimesheetTable(){
     const [entries, setEntries] = useState([]);
+    const [filteredEntries, setFilteredEntries] = useState([]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
         async function fetchEntries() {
@@ -15,7 +21,10 @@ export default function TimesheetTable(){
 
                 const data = await res.json()
                 console.log('Fetched entries: ', data);
+
                 setEntries(data.list);
+                setFilteredEntries(data.list);
+
             } catch (error) {
                 console.error('Error fetching entries: ', error);
             }
@@ -23,35 +32,66 @@ export default function TimesheetTable(){
         fetchEntries();
     }, []);
 
-    const totalHours = entries.reduce((sum, row) => sum + Number(row.hours), 0);
-    return(
-        <table>
-            <thead>
-                <tr>
-                    <th>Task Description</th>
-                    <th>Date</th>
-                    <th>Project</th>
-                    <th>Hours</th>
-                </tr>
-            </thead>
-            <tbody>
-                {entries.map((row, index) => (
-                    <tr key={index}>
-                        <td>{row.taskDescription}</td>
-                        <td>{row.date}</td>
-                        <td>{row.project}</td>
-                        <td>{row.hours}</td>
+    useEffect(() => {
+        let filtered = [...entries];
 
-                    </tr>
-                ))} 
-            </tbody>
-                <tfoot>
+        if (startDate)  {
+            filtered = filtered.filter((entry) => entry.date >= startDate);
+        }
+        if (endDate) {
+            filtered = filtered.filter((entry) => entry.date <= endDate);
+        }
+        setFilteredEntries(filtered);
+        
+    }, [startDate, endDate, entries])
+
+    const totalHours = filteredEntries.reduce((sum, row) => sum + Number(row.hours), 0);
+
+    return(
+        <div>
+
+            <div className="container">
+                <h3 className="login-text">Select time period</h3>
+                <fieldset className="login-fieldset">
+                    <legend className="login-text">Start Date</legend>
+                    <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                </fieldset>
+                <fieldset className="login-fieldset">
+                    <legend className="login-text">End Date</legend>
+                    <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                </fieldset>
+            </div>
+
+            <div>
+            <table>
+                <thead>
                     <tr>
-                        <td className="table-buffer" colSpan={2}></td>
-                        <td >Total hours</td>
-                        <td>{totalHours}</td>
+                        <th>Task Description</th>
+                        <th>Date</th>
+                        <th>Project</th>
+                        <th>Hours</th>
                     </tr>
-                </tfoot>
-        </table>
+                </thead>
+                <tbody>
+                    {filteredEntries.map((row, index) => (
+                        <tr key={index}>
+                            <td>{row.taskDescription}</td>
+                            <td>{row.date}</td>
+                            <td>{row.project}</td>
+                            <td>{row.hours}</td>
+
+                        </tr>
+                    ))} 
+                </tbody>
+                    <tfoot>
+                        <tr>
+                            <td className="table-buffer" colSpan={2}></td>
+                            <td >Total hours</td>
+                            <td>{totalHours}</td>
+                        </tr>
+                    </tfoot>
+            </table>
+            </div>
+        </div>
     )
 }
