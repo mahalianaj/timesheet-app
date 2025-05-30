@@ -49,7 +49,6 @@ export default function TimesheetTable(){
 
     return(
         <div>
-
             <div className="container">
                 <h3 className="login-text">Select time period</h3>
                 <fieldset className="login-fieldset">
@@ -61,7 +60,6 @@ export default function TimesheetTable(){
                     <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </fieldset>
             </div>
-
             <div>
             <table>
                 <thead>
@@ -86,8 +84,8 @@ export default function TimesheetTable(){
                     <tfoot>
                         <tr>
                             <td className="table-buffer" colSpan={2}></td>
-                            <td >Total hours</td>
-                            <td>{totalHours}</td>
+                            <td className="font-bold" >Total hours</td>
+                            <td className="font-bold">{totalHours}</td>
                         </tr>
                     </tfoot>
             </table>

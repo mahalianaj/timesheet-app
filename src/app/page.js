@@ -5,7 +5,7 @@ import Login from "./login/page.jsx";
 import TimesheetTable from "./components/TimesheetTable.jsx";
 
 
-function App() {
+export default function App() {
     return (
         <div>
             <Login/>
@@ -13,6 +13,5 @@ function App() {
     );
 }
 
-export default App;
 
 

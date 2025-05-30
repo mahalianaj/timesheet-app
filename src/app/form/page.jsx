@@ -7,11 +7,12 @@ import LongTextInput from "../components/LongTextInput";
 import ProjectSelector from "../components/ProjectSelector";
 import HoursInput from "../components/HoursInput";
 import '../styles/form.css'
-import TimesheetTable from "../components/TimesheetTable";
 import { useRouter } from 'next/navigation';
+import Header from "../components/Header";
 
-function MyForm() {
+ export default function MyForm() {
     const router = useRouter();
+
     const [taskDescription, setTaskDescription] = useState('');
     const [hours, setHours] = useState('');
     const [date, setDate] = useState('');
@@ -22,6 +23,8 @@ function MyForm() {
 
     let [selectedProject, setSelectedProject] = useState('');
     const [customProject, setCustomProject] = useState('');
+
+    const [formSubmitted, setFormSubmitted] = useState(false);
     
     useEffect(() => {
         async function fetchProjects() {
@@ -82,7 +85,8 @@ function MyForm() {
             setSelectedProject('');
             setNewProject('');
             setTeam('');
-            
+            setFormSubmitted(true);
+            setTimeout(() => setFormSubmitted(false), 2500);
 
         } catch (error) {
             console.error('Error submitting form: ', error);
@@ -92,8 +96,20 @@ function MyForm() {
 
     return (
         <div className="form-container">
+            <Header 
+                b1Text={'Back to dashboard'} 
+                b1Route={'/dashboard'}
+                b2Text={'See entries'}
+                b2Route={'/table'}
+                />
             <form onSubmit={handleSubmit} className="form-box">
                 <h2 className="form-title">Timesheet form</h2>
+                {formSubmitted && (
+                    <div className="text-green-700 bg-green-100 border border-green-400 p-2 rounded mb-4 text-center">
+                        Form submitted successfully!
+                    </div>
+                )
+                }
                 <DateInput date={date} setDate={setDate} />
                 <br />
                 <LongTextInput text={taskDescription} setText={setTaskDescription}/>
@@ -109,10 +125,8 @@ function MyForm() {
                 <HoursInput hours={hours} setHours={setHours}/>
                 <br />
                 <button type='submit' className="form-button">Submit Form</button>
-                <button type='button' className="form-button" onClick={() => router.push('/table')}>Go to table</button>
             </form>
         </div>
     );
 }
 
-export default MyForm;

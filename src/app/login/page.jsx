@@ -2,7 +2,6 @@
 import { signIn} from "next-auth/react";
 import { useState } from "react";
 import '../styles/login.css'
-import Dashboard from "../dasboard/page";
 import MyForm from "../form/page";
 import { useRouter } from 'next/navigation';
 
@@ -17,7 +16,7 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault();
         if (email && password) {
-            router.push('/form');
+            router.push('/dashboard');
         }
         
     };
